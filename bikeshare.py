@@ -330,7 +330,7 @@ def main():
     """Usage: python bikeshare.py"""
 
     if sys.version_info < (3, 5, 0):
-        sys.stderr.write("You need to use Python version 3.6.0 or higher " +
+        sys.stderr.write("You need to use Python version 3.5.0 or higher " +
                          "to run this script\n")
         sys.exit(1)
 
