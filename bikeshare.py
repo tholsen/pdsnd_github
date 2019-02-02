@@ -1,3 +1,4 @@
+import sys
 import time
 import numpy as np
 import pandas as pd
@@ -326,6 +327,13 @@ def user_stats(df):
 
 
 def main():
+    """Usage: python bikeshare.py"""
+
+    if sys.version_info < (3, 5, 0):
+        sys.stderr.write("You need to use Python version 3.6.0 or higher " +
+                         "to run this script\n")
+        sys.exit(1)
+
     while True:
         city, month, day = get_filters()
         df = load_data(city, month, day)
