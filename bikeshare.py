@@ -129,8 +129,9 @@ def print_data(df, data_type, reply):
     Print the raw or filtered data to the screen, N rows at a time
 
     Args:
-        (pdf) df - pandas dataframe of 'raw' or 'filtered' data
+        (pdf) df - pandas DataFrame of 'raw' or 'filtered' data
         (str) data_type - either 'raw' or 'filtered' data
+        (str) reply - initial value of reply (always 'yes')
     """
 
     while True:
@@ -279,7 +280,7 @@ def print_trips(trip_duration, length_description):
 
     Args:
         (td) trip_duration - timedelta object - df['Trip Duration']
-        (str) length_description - either longest or shortest trip
+        (str) length_description - String required to descripe trip duration
     """
 
     days, hours, minutes, seconds, ms, us, ns = trip_duration.components
