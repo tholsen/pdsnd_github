@@ -43,7 +43,7 @@ def get_filters():
         # get user input for month (all, january, february, ... , june)
         while month not in months:
             month = input("\nEnter a month to analyze "
-                          "('January' through 'June'):\n")
+                          "('all' or 'January' through 'June'):\n")
             month = month.lower()
 
     if (filter == 'day') or (filter == 'both'):
@@ -52,7 +52,7 @@ def get_filters():
                         'thursday', 'friday', 'saturday', 'sunday']
         while day not in days_of_week:
             day = input("\nEnter a day of the week to analyze "
-                        "('Monday', 'Tuesday', ... 'Sunday'):\n")
+                        "('all' or 'Monday', 'Tuesday', ... 'Sunday'):\n")
             day = day.lower()
 
     print()
@@ -125,7 +125,13 @@ def load_data(city, month, day):
 
 
 def print_data(df, data_type, reply):
-    """Print the raw or filtered data to the screen, N rows at a time."""
+    """
+    Print the raw or filtered data to the screen, N rows at a time
+
+    Args:
+        (pdf) df - pandas dataframe of 'raw' or 'filtered' data
+        (str) data_type - either 'raw' or 'filtered' data
+    """
 
     while True:
         output_style = input("\nWould you like to see the output in line "
@@ -249,46 +255,40 @@ def trip_duration_stats(df):
 
     # display total travel time in the given city.
     total_time = df['Trip Duration'].sum()
-    days, hours, minutes, seconds, ms, us, ns = total_time.components
-    if days == 0:
-        print("Total travel time is {:02}:{:02}:{:02}"
-              .format(hours, minutes, seconds))
-    else:
-        print("Total travel time is {} days {:02}:{:02}:{:02}"
-              .format(days, hours, minutes, seconds))
+    total_message = 'total time of all the trips was'
+    print_trips(total_time, total_message)
 
     # display mean travel time
     mean_time = df['Trip Duration'].mean()
-    days, hours, minutes, seconds, ms, us, ns = mean_time.components
+    print_trips(mean_time, 'mean trip took')
 
-    if days == 0:
-        print("Mean travel time is {:02}:{:02}:{:02}"
-              .format(hours, minutes, seconds))
-    else:
-        print("Mean travel time is {} days {:02}:{:02}:{:02}"
-              .format(days, hours, minutes, seconds))
-
+    # display longest and shortest trips
     longest_trip = df['Trip Duration'].max()
     shortest_trip = df['Trip Duration'].min()
 
-    days, hours, minutes, seconds, ms, us, ns = longest_trip.components
-    if days == 0:
-        print("The longest trip took {:02}:{:02}:{:02}"
-              .format(hours, minutes, seconds))
-    else:
-        print("The longest trip took {} days {:02}:{:02}:{:02}"
-              .format(days, hours, minutes, seconds))
-
-    days, hours, minutes, seconds, ms, us, ns = shortest_trip.components
-    if days == 0:
-        print("The shortest trip took {:02}:{:02}:{:02}"
-              .format(hours, minutes, seconds))
-    else:
-        print("The shortest trip took {} days {:02}:{:02}:{:02}"
-              .format(days, hours, minutes, seconds))
+    print_trips(longest_trip, 'longest trip took')
+    print_trips(shortest_trip, 'shortest trip took')
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
+
+
+def print_trips(trip_duration, length_description):
+    """
+    Determine trip_duration and print out results
+
+    Args:
+        (td) trip_duration - timedelta object - df['Trip Duration']
+        (str) length_description - either longest or shortest trip
+    """
+
+    days, hours, minutes, seconds, ms, us, ns = trip_duration.components
+    if days == 0:
+        print("The {} {:02}:{:02}:{:02}"
+              .format(length_description, hours, minutes, seconds))
+    else:
+        print("The {} {} days {:02}:{:02}:{:02}"
+              .format(length_description, days, hours, minutes, seconds))
 
 
 def user_stats(df):
