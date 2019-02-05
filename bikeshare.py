@@ -62,8 +62,7 @@ def get_filters():
 
 def load_data(city, month, day):
     """
-    Loads data for the specified city and filters by month and day if
-    applicable.
+    Loads data for the specified city and applies filters as needed
 
     Args:
         (str) city - name of the city to analyze
@@ -191,14 +190,14 @@ def time_stats(df):
     month = df['month'].mode()[0]
     count = df.loc[df['month'] == month].count()[0]
     month = months[month]
-    print('Most common month is {} with {} users.'.format(month.title(),
-                                                          count))
+    print('Most common month is {} with {} users.'
+          .format(month.title(), count))
 
     # display the most common day of week
     weekday = df['day_of_week'].mode()[0]
     count = df.loc[df['day_of_week'] == weekday].count()[0]
-    print('Most common day of week is {} with {} users.'.format(weekday,
-                                                                count))
+    print('Most common day of week is {} with {} users.'
+          .format(weekday, count))
 
     # display the most common start hour
     start_hour = df['hour'].mode()[0]
@@ -207,8 +206,8 @@ def time_stats(df):
         start_hour = str(start_hour) + ':00 AM'
     else:
         start_hour = str(start_hour - 12) + ':00 PM'
-    print('Most common start hour is {} with {} users.'.format(start_hour,
-                                                               count))
+    print('Most common start hour is {} with {} users.'
+          .format(start_hour, count))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -339,6 +338,8 @@ def user_stats(df):
 
 
 def main():
+    """Usage: python bikeshare.py"""
+
     while True:
         city, month, day = get_filters()
         df = load_data(city, month, day)
