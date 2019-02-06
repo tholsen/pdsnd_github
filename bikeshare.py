@@ -87,7 +87,7 @@ def load_data(city, month, day):
 
     # extract month and weekday name from Start Time to create new columns
     df['month'] = df['Start Time'].dt.month
-    df['day_of_week'] = df['Start Time'].dt.weekday_name
+    df['day of week'] = df['Start Time'].dt.weekday_name
 
     # filter by month if applicable
     if (month != 'all') and (month != ''):
@@ -103,7 +103,14 @@ def load_data(city, month, day):
     # filter by day of week if applicable
     if (day != 'all') and (day != ''):
         # filter by day of week to create the new dataframe
-        df = df[df['day_of_week'] == day.title()]
+        df = df[df['day of week'] == day.title()]
+
+    # Create a new column in df named 'hour'
+    df['hour'] = df['Start Time'].dt.hour
+
+    # Create a new column in df named 'trip'
+    # Location where bikes were rented and then returned
+    df['trip'] = df['Start Station'].str.cat(df['End Station'], sep=' to ')
 
     data_type = ''
     if((len(df.index) - 1) > 0):
@@ -119,7 +126,6 @@ def load_data(city, month, day):
                 break
             else:
                 print("Please enter 'raw', 'filtered', or 'no'.")
-        # print()
         print('-'*40)
     return df
 
@@ -134,6 +140,7 @@ def print_data(df, data_type, reply):
         (str) reply - initial value of reply (always 'yes')
     """
 
+    # Determine output type (json or columns)
     while True:
         output_style = input("\nWould you like to see the output in line "
                              "delimited json format?\n")
@@ -147,6 +154,7 @@ def print_data(df, data_type, reply):
             print("Please enter 'yes' or 'no'\n")
 
     print()
+    # Determine start, stop and step values
     start = 0
     while True:
         try:
@@ -163,6 +171,7 @@ def print_data(df, data_type, reply):
         step = stop
         print("Step size lowered to {} rows.".format(stop))
 
+    # Print out 'raw' or 'filtered' data
     while (reply.lower()[0] == 'y'):
         end = min((start + step), stop)
 
@@ -178,7 +187,7 @@ def print_data(df, data_type, reply):
             break
         reply = (input("Would you like to see more of the {} data? Enter "
                        "'yes' or 'no'. ".format(data_type.lower())) or 'yes')
-        start += step
+        start += step  # Increment start by step count
         print()
 
     print("\nFinished\n")
@@ -191,20 +200,20 @@ def time_stats(df):
     start_time = time.time()
 
     # Create a new column in df named 'hour'
-    df['hour'] = df['Start Time'].dt.hour
+    # df['hour'] = df['Start Time'].dt.hour
 
     # display the most common month
-    month = df['month'].mode()[0]
+    month = df['month'].mode()[0]  # Get index of month
     count = df.loc[df['month'] == month].count()[0]
-    month = months[month]
+    month = months[month]  # Get name of month from months list & index
     print('Most common month is {} with {} users.'
           .format(month.title(), count))
 
     # display the most common day of week
-    weekday = df['day_of_week'].mode()[0]
-    count = df.loc[df['day_of_week'] == weekday].count()[0]
+    weekday = df['day of week'].mode()[0]
+    count = df.loc[df['day of week'] == weekday].count()[0]
     print('Most common day of week is {} with {} users.'
-          .format(weekday, count))
+          .format(weekday.title(), count))
 
     # display the most common start hour
     start_hour = df['hour'].mode()[0]
@@ -239,7 +248,7 @@ def station_stats(df):
           .format(end_station, count))
 
     # display most frequent combination of start station and end station trip
-    df['trip'] = df['Start Station'].str.cat(df['End Station'], sep=' to ')
+    # df['trip'] = df['Start Station'].str.cat(df['End Station'], sep=' to ')
     trip = df['trip'].mode()[0]
     count = df.loc[df['trip'] == trip].count()[0]
     print("Most frequent trip is {} with {} users.".format(trip, count))
@@ -327,10 +336,10 @@ def user_stats(df):
         earliest = df['Birth Year'].min()
         most_recent = df['Birth Year'].max()
         most_common = df['Birth Year'].mode()[0]
+
         print("Earliest year of birth is {}.".format(int(earliest)))
         print("Most recent year of birth is {}.".format(int(most_recent)))
         print("Most common year of birth is {}.".format(int(most_common)))
-        # print(df['Birth Year'].sort_values().head())
     else:
         print("Birth Year is not in dataset.")
 
@@ -340,6 +349,8 @@ def user_stats(df):
 
 def main():
     """Usage: python bikeshare.py"""
+
+    start_time = time.time()
 
     while True:
         city, month, day = get_filters()
@@ -356,6 +367,9 @@ def main():
         restart = input("\nWould you like to restart? Enter 'yes' or 'no'.\n")
         if restart.lower() != 'yes':
             break
+
+    print("\nProgram took {} seconds".format(time.time() - start_time))
+    print('-'*40)
 
 
 if __name__ == "__main__":
