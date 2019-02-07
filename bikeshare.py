@@ -206,14 +206,12 @@ def time_stats(df):
     month = df['month'].mode()[0]  # Get index of month
     count = df.loc[df['month'] == month].count()[0]
     month = months[month]  # Get name of month from months list & index
-    print('Most common month is {} with {} users.'
-          .format(month.title(), count))
+    print_travel('month', month.title(), count)
 
     # display the most common day of week
     weekday = df['day of week'].mode()[0]
     count = df.loc[df['day of week'] == weekday].count()[0]
-    print('Most common day of week is {} with {} users.'
-          .format(weekday.title(), count))
+    print_travel('day of week', weekday.title(), count)
 
     # display the most common start hour
     start_hour = df['hour'].mode()[0]
@@ -222,11 +220,23 @@ def time_stats(df):
         start_hour = str(start_hour) + ':00 AM'
     else:
         start_hour = str(start_hour - 12) + ':00 PM'
-    print('Most common start hour is {} with {} users.'
-          .format(start_hour, count))
+    print_travel('start hour', start_hour, count)
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
+
+
+def print_travel(travel_time, actual_dt, count):
+    """
+    Print most common travel_time used with count riders
+
+    Args:
+        (str) travel_time - String of 'month', 'day of week', or 'start hour'
+        (str) actual_dt - actual month, day of week, or start hour
+        (int) count - number of users for given travel time
+    """
+    print("Most common {} is {} with {} users."
+          .format(travel_time, actual_dt, count))
 
 
 def station_stats(df):
