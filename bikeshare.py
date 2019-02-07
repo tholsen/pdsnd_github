@@ -236,25 +236,42 @@ def station_stats(df):
     start_time = time.time()
 
     # display most commonly used start station
-    start_station = df['Start Station'].mode()[0]
-    count = df.loc[df['Start Station'] == start_station].count()[0]
-    print("Most commonly used start station is {} with {} users."
-          .format(start_station, count))
+    print_station(df, 'Start Station')
+    # start_station = df['Start Station'].mode()[0]
+    # count = df.loc[df['Start Station'] == start_station].count()[0]
+    # print("Most commonly used start station is {} with {} users."
+    #       .format(start_station, count))
 
     # display most commonly used end station
-    end_station = df['End Station'].mode()[0]
-    count = df.loc[df['End Station'] == end_station].count()[0]
-    print("Most commonly used end station is {} with {} users."
-          .format(end_station, count))
+    print_station(df, 'End Station')
+    # end_station = df['End Station'].mode()[0]
+    # count = df.loc[df['End Station'] == end_station].count()[0]
+    # print("Most commonly used end station is {} with {} users."
+    #       .format(end_station, count))
 
-    # display most frequent combination of start station and end station trip
+    # display most frequent combination of start station and end station
     # df['trip'] = df['Start Station'].str.cat(df['End Station'], sep=' to ')
+    # Moved previous line into load_data module
     trip = df['trip'].mode()[0]
     count = df.loc[df['trip'] == trip].count()[0]
-    print("Most frequent trip is {} with {} users.".format(trip, count))
+    print("Most common trip is {} with {} users.".format(trip, count))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
+
+
+def print_station(df, station):
+    """
+    Print most commonly used start and end stations
+
+    Args:
+        (df) df - pandas DataFrame
+        (str) station - String used to pick start or end location
+    """
+    station_location = df[station].mode()[0]
+    count = df.loc[df[station] == station_location].count()[0]
+    print("Most commonly used {} is {} with {} users."
+          .format(station.lower(), station_location, count))
 
 
 def trip_duration_stats(df):
